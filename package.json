@@ -1,0 +1,15 @@
+{
+  "name": "app-vue",
+  "version": "1.0.0",
+  "description": "a vue.js test app for mobile app",
+  "author": "jinglf000",
+  "dependencies": {
+    "express": "^4.15.2",
+    "express-http-proxy": "^0.11.0",
+    "morgan": "^1.8.1",
+    "path": "^0.12.7",
+    "vue": "^2.2.3"
+  },
+  "repository": "https://github.com/jinglf000/App_vue",
+  "license": "MIT"
+}
