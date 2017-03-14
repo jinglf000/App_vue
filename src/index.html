@@ -27,7 +27,7 @@
         <span>{{computedMessage}}</span>
         <p>{{allMessage}}</p>
         <p>{{messageGetSet}}</p>
-        <p v-bind:class="classStyle" title="{{ message }}">classStyle</p>
+        <p v-bind:class="classStyle" :title="message">classStyle</p>
         <!-- 无论是class 来说还是对于 style ，都要注意到 key （才是那个class，或者是style）的样式名称 -->
         <p>
             <label for="changeSize">改变文字的大小
@@ -54,7 +54,12 @@
             <li v-for="n in 10">{{n}}</li>
         </ul>
     </div>
-
+    <div id="box2">
+        <input type="text" v-model="newTodoText" v-on:keyup.enter="addNewTodo" placeholder="addNewTodo">
+        <ul>
+            <li is="todo-item" v-for="(todo,index) in todos" v-bind:title="todo" v-on:remove="todos.splice(index,1)"></li>
+        </ul>
+    </div>
     <script src="./js/app.js"></script>
 </body>
 </html>

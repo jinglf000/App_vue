@@ -65,3 +65,7 @@ let vm = new Vue({
     }
 
 });
+
+Vue.component("todo-item",{
+    template: '\<li>\{{title}}'
+});
