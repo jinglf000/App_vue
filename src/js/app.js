@@ -6,7 +6,18 @@ let vm = new Vue({
         message : "HELLO Vue",
         cla : "my-vue-container",
         canUse : false,
-        allMessage : ""
+        allMessage : "",
+        fontSize : 30,
+        classStyle : {
+            red : true,
+            "box-shadow" : true
+        },
+        pStyle : {
+            "color" : "#2997d0",
+            "fontSize" : 18,
+            "backgroundColor" : "#ccc"
+        },
+        list : ["1","2","3","4"]
     },
     methods : {
         doSomething : function(){
@@ -43,8 +54,14 @@ let vm = new Vue({
                 let val = newVal.trim();
                 this.message =  val;
             }
+        },
+        pStyleComputed : {
+            get : function(){
+                return {
+                    "fontSize" : parseInt(this.fontSize)
+                }
+            }
         }
     }
 
 });
-let xx = "HELLOＷＯＲＬＤ";

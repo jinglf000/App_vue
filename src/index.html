@@ -3,6 +3,19 @@
     <meta charset="utf-8">
     <title>VUE app</title>
     <script type="text/javascript" src="./js/vue.js"></script>
+    <style>
+        .red{
+            color : red;
+        }
+        .box-shadow{
+            text-shadow: 1px 1px 1px #ccc;
+        }
+        #box2{
+            float: right;
+            border : 1px solid #009900;
+            border-radius : 5px;
+        }
+    </style>
 </head>
 <body>
     <div id="box" v-bind:class="cla">
@@ -10,11 +23,38 @@
             {{message | reverseStr}}     
         </span>
         <input v-model="message" type="text">
-        <button v-bind:onclick="doSomething">doSomething</button>
+        <button v-on:click="doSomething">doSomething</button>
         <span>{{computedMessage}}</span>
         <p>{{allMessage}}</p>
         <p>{{messageGetSet}}</p>
+        <p v-bind:class="classStyle" title="{{ message }}">classStyle</p>
+        <!-- 无论是class 来说还是对于 style ，都要注意到 key （才是那个class，或者是style）的样式名称 -->
+        <p>
+            <label for="changeSize">改变文字的大小
+                <input type="range" min="12" max="800" v-model="fontSize">
+            </label>
+        </p>
+        <p v-bind:style="pStyleComputed">这里是P的style</p>
+
+        <div v-if="Math.random() > 0.5"> Math.random > 0.5 </div>
+        <div v-else-if="Math.random() < 0.7">dayu 0.7</div>
+        <div v-else>dayu 0.7s</div>
+
+        <!-- key 使用它来管理科可以进行复用的元素  -->
+        <!-- v-for 的优先级大于 v-if -->
+        <br>
+        <ul>
+            <li v-for="(item , index) of list" v-if="item < 4">{{item}}---{{index}}</li>
+        </ul>
+        <br>
+        <ol>
+            <li v-for="(value,key) in pStyle">---- {{ key }} ---- {{value}}</li>
+        </ol>
+        <ul>
+            <li v-for="n in 10">{{n}}</li>
+        </ul>
     </div>
+
     <script src="./js/app.js"></script>
 </body>
 </html>
