@@ -47,3 +47,4 @@ let vm = new Vue({
     }
 
 });
+let xx = "HELLOＷＯＲＬＤ";
