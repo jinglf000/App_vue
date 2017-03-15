@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
 <head>
     <meta charset="utf-8">
@@ -11,11 +12,20 @@
             text-shadow: 1px 1px 1px #ccc;
         }
         #box2{
-            float: right;
+            position: absolute;
+            right: 10px;
+            top: 20px;
             border : 1px solid #009900;
             border-radius : 5px;
         }
+        #box4{
+            position: absolute;
+            right: 10px;
+            border: 2px solid red;
+            border-radius: 8px;
+        }
     </style>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
 </head>
 <body>
     <div id="box" v-bind:class="cla">
@@ -23,7 +33,12 @@
             {{message | reverseStr}}     
         </span>
         <input v-model="message" type="text">
-        <button v-on:click="doSomething">doSomething</button>
+        <button v-on:click="count ++">{{count}}</button>
+        <!-- 事件修饰符 ，使用Vue处理常见处理 -->
+        <!-- stop阻止事件冒泡  prevent阻止默认事件 capture捕获模式 self本身元素触发 这些对应于原生的DOM元素 -->
+        <!-- once只执行一次 自定义事件-->
+        <button v-on:click='doSomething(count,$event)'>doSomething</button>
+        <p>enter 按键的修饰符，用于keyup事件<input type="text" v-on:keyup.enter="printLog(keyupModel,$event)" v-model="keyupModel"></p>
         <span>{{computedMessage}}</span>
         <p>{{allMessage}}</p>
         <p>{{messageGetSet}}</p>
@@ -59,6 +74,41 @@
         <ul>
             <li is="todo-item" v-for="(todo,index) in todos" v-bind:title="todo" v-on:remove="todos.splice(index,1)"></li>
         </ul>
+    </div>
+    <div id="box3">
+        <!-- 在使用 v-model 的时候需要在date中声明该实例才行 -->
+        <textarea name="lines" id="lines" cols="30" rows="10" placeholder="add multiple lines" v-model="lines"></textarea>
+        <p>多行文本输入内容：{{lines}}</p>
+        <select name="selects" id="select" multiple v-model="selectContent">
+            <option value="A" >+++A+++</option>
+            <option value="B">+++B+++</option>
+            <option value="C">+++C+++</option>
+        </select>
+        <p>select 内容：{{selectContent}}</p>
+        <!-- checkedNames的数据类型决定了 最终checkedNames最终的值是什么 -->
+        <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+        <label for="jack">Jack</label>
+        <input type="checkbox" id="john" value="John" v-model="checkedNames">
+        <label for="john">John</label>
+        <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+        <label for="mike">Mike</label>
+        <br>
+        <span>{{checkedNames}}</span>
+        <br>
+        <select v-model="selected">
+            <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
+        </select>
+        <span>Selected : {{selected}}</span>
+        <br>
+        <!-- 通过设置 model的值，来设置自定义 -->
+        <input type="checkbox" v-bind:true-value="checkTrue" v-bind:false-value="checkFalse" v-model="checkValue">
+    </div>
+    <div id="box4">
+        <ui-dialog>
+            <span slot="header">标题</span>
+            <span slot="body">确认删除吗？</span>
+            <span>删不删除这是一个问题</span>
+        </ui-dialog>
     </div>
     <script src="./js/app.js"></script>
 </body>
