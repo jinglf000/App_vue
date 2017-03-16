@@ -130,20 +130,27 @@ let vm3 = new Vue({
     }
 });
 
-Vue.component("ui-dialog",{
-    template :  "<div class='alert container'><header class='header'><slot name='header'></header>" +
+// 同样也可以通过 保留的component 元素的v-bind:is='ui-dialog' 动态的绑定组件
+// 对于复用的Vue组件而言要明确的定义好 组件的API接口
+// props  允许外部环境传递数据给组件 props 属性
+// Events 允许组件触发外部环境的副作用 触发emit事件
+// Slots  允许外部环境将额外的内容组合在组件中。slot  内容分发
+Vue.component("uiDialog",{
+    template :  "<div class='alert container'><header class='header'><slot name='header'></slot></header>" +
                 "<main><slot name='body'></slot><slot></slot></main>" +  "<p>{{helloVue}}</p>"+
-                "<button v-on:click='yesCallback' class='btn btn-pramary'>Click callback</button>" + "<span>{{count}}</span>"  +
-                "<button v-on:click='noCallbcak' class='btn btn-danger'>" + 
+                "<button v-on:click='yesCallback' class='btn btn-primary'>Click callback</button>" + "<span  class='num'>{{count}}</span>"  +
+                "<button v-on:click='noCallbcak' class='btn btn-danger'>借问酒家何处有？</button>" + 
                 "</div>",
     data : function(){
         // 为保证 组件的单独，高内聚 低耦合的特性
         let val = {
-            count : 0
+            count : 0,
+            yesCallb : this.yesCallback
         };
         return val;
     },
     // 父元素所能够传到组件中的对象的接口，接口参数
+    // 对于接口参数而言，是元素的属性 驼峰式（yesCallback） 要改写成 中线的形式 yes-callback
     props : {
         yesCallback : Function,
         helloVue : {
@@ -154,10 +161,30 @@ Vue.component("ui-dialog",{
     methods : {
         noCallbcak : function(){
             this.count ++ ;
-            this.$emit('emitFromChild');
+            this.$emit('emitchild');
         }
     }
     
 
     
 });
+
+// 自定义组件使用
+let vm4 = new Vue({
+    el : "#box4",
+    data : {
+        parentVue : "这里是parentVue，是父元素所给予的值",
+        count : 0,
+        parentVal : "parent 哈哈哈~~~~"
+    },
+    methods : {
+        addNum : function(){
+            this.count ++ ;
+        },
+        btnClick : function(){
+            console.log(this);// 即便函数被传递到组件里了，并且在组件里面运行，但是他的this还是指向了父组件
+            // console.log("%c 从父元素中传递过来的函数 btnClick，","font-size:18px;color:#2997d0");
+        }
+    }
+
+})

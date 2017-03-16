@@ -20,9 +20,22 @@
         }
         #box4{
             position: absolute;
+            top: 100px;
+            z-index: 10;
+            background-color: #fff;
             right: 10px;
             border: 2px solid red;
             border-radius: 8px;
+        }
+        area:hover{
+            border: 1px solid greenyellow;
+        }
+        .num{
+            font-size: 32px;
+            font-weight: 900;
+            color: #009900;
+            text-shadow: 1px 1px 1px #ccc ;
+            word-spacing: 56px;
         }
     </style>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -104,10 +117,14 @@
         <input type="checkbox" v-bind:true-value="checkTrue" v-bind:false-value="checkFalse" v-model="checkValue">
     </div>
     <div id="box4">
-        <ui-dialog>
+        <p>从子组件中所传递过来的事件的个数<span class="num"> {{count}}</span></p>
+        <!-- 在 ui-dialog（包括它自己）之前都是属于父元素的  -->
+        <ui-dialog v-bind:hello-vue="parentVue" v-on:emitchild="addNum" v-bind:yes-callback="btnClick">
             <span slot="header">标题</span>
             <span slot="body">确认删除吗？</span>
             <span>删不删除这是一个问题</span>
+            <p>{{parentVal}}</p>
+            <!-- 这里的parentVal 对应的是父模板的作用域，分发的内容是在父作用域内编译 -->
         </ui-dialog>
     </div>
     <script src="./js/app.js"></script>
