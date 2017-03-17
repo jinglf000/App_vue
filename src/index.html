@@ -5,6 +5,9 @@
     <title>VUE app</title>
     <script type="text/javascript" src="./js/vue.js"></script>
     <style>
+        *{
+            font-family: "Microsoft YaHei";
+        }
         .red{
             color : red;
         }
@@ -36,6 +39,12 @@
             color: #009900;
             text-shadow: 1px 1px 1px #ccc ;
             word-spacing: 56px;
+        }
+        #box5{
+            background-color: #ccc;
+            line-height: 2;
+            font-size: 24px;
+            font-weight: lighter;
         }
     </style>
     <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
@@ -117,6 +126,8 @@
         <input type="checkbox" v-bind:true-value="checkTrue" v-bind:false-value="checkFalse" v-model="checkValue">
     </div>
     <div id="box4">
+        <h3>{{helloWorld.one}}</h3>
+        <h4>{{helloWorld.two}}  ------  {{helloWorld.three}}</h4>
         <p>从子组件中所传递过来的事件的个数<span class="num"> {{count}}</span></p>
         <!-- 在 ui-dialog（包括它自己）之前都是属于父元素的  -->
         <ui-dialog v-bind:hello-vue="parentVue" v-on:emitchild="addNum" v-bind:yes-callback="btnClick">
@@ -126,6 +137,10 @@
             <p>{{parentVal}}</p>
             <!-- 这里的parentVal 对应的是父模板的作用域，分发的内容是在父作用域内编译 -->
         </ui-dialog>
+    </div>
+    <div id="box5">{{message}}</div>
+    <div id="box6">
+        <example></example>
     </div>
     <script src="./js/app.js"></script>
 </body>

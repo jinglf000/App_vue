@@ -85,6 +85,9 @@ Vue.component("todo-item",{
 let vm2 = new Vue({
     el : "#box2",
     data : {
+        // 在实例中添加的data属性是相应式的，在Vue 实例化之后添加的对象则不是
+        // 这里的属性被称之为 根基响应式属性 ，即便在 表单元素中使用了v-model 同样也要在
+        // Vue实例的data属性里面进行声明；这个限制更利于以后代码阅读和规范
         newTodoText : "",
         todos : [
             "Study ES6 ",
@@ -131,6 +134,7 @@ let vm3 = new Vue({
 });
 
 // 同样也可以通过 保留的component 元素的v-bind:is='ui-dialog' 动态的绑定组件
+// 组件也是一个 Vue对象的instance 实例
 // 对于复用的Vue组件而言要明确的定义好 组件的API接口
 // props  允许外部环境传递数据给组件 props 属性
 // Events 允许组件触发外部环境的副作用 触发emit事件
@@ -140,12 +144,14 @@ Vue.component("uiDialog",{
                 "<main><slot name='body'></slot><slot></slot></main>" +  "<p>{{helloVue}}</p>"+
                 "<button v-on:click='yesCallback' class='btn btn-primary'>Click callback</button>" + "<span  class='num'>{{count}}</span>"  +
                 "<button v-on:click='noCallbcak' class='btn btn-danger'>借问酒家何处有？</button>" + 
+                "<p>{{message}}</p>" + 
                 "</div>",
     data : function(){
         // 为保证 组件的单独，高内聚 低耦合的特性
         let val = {
             count : 0,
-            yesCallb : this.yesCallback
+            yesCallb : this.yesCallback,
+            message : "亚拉锁 这就是青藏高原！！！"
         };
         return val;
     },
@@ -162,6 +168,9 @@ Vue.component("uiDialog",{
         noCallbcak : function(){
             this.count ++ ;
             this.$emit('emitchild');
+        },
+        updateMessage : function(){
+            this.message = "修改了我？？？";
         }
     }
     
@@ -175,7 +184,10 @@ let vm4 = new Vue({
     data : {
         parentVue : "这里是parentVue，是父元素所给予的值",
         count : 0,
-        parentVal : "parent 哈哈哈~~~~"
+        parentVal : "parent 哈哈哈~~~~",
+        helloWorld : {
+            one : "he"
+        }
     },
     methods : {
         addNum : function(){
@@ -187,4 +199,50 @@ let vm4 = new Vue({
         }
     }
 
+});
+// 同样也可以通过Vue.set方法把相应的属性添加到嵌套的对象上（嵌套对象就是已经在 实例化Vue时的data）
+// 让实例化的data属性作为一个容器来添加，但是不推荐这样去做
+Vue.set(vm4.helloWorld,"two",1562);
+vm4.$set(vm4.helloWorld,"three",8936);
+
+vm4.parentVal = "change ++==";
+// vm4.$el.textContent = "NEW Value";
+Vue.nextTick(function(){
+    // vm4.$el.textContent = "NEW Value";
+    console.log("DOM 更新完畢")
+});
+
+// vm5 DOM的异步更新队列
+let vm5 = new Vue({
+    el : "#box5",
+    data : {
+        message : 15
+    }
+});
+vm5.message = "new Message" ;
+vm5.$el.textContent === "new Message"; // false 因为是异步更新DOM所以此时 内容不相等
+Vue.nextTick(function(){
+    vm5.$el.textContent === "new Message";// true
+});
+
+Vue.component("example",{
+    template : "<span v-on:mouseover.once='updateMessage'>{{message}}</span>",
+    data : function(){
+        return {
+            message : "not updated"
+        }
+    },
+    methods : {
+        updateMessage : function(){
+            this.message = "updated ";
+            console.log(this.$el.textContent);
+            this.$nextTick(function(){
+                console.log(this.$el.textContent);
+            });
+        }
+    }
+});
+
+let vm6 = new Vue({
+    el : "#box6"
 })
