@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Two way data binding</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        .nav{
+            text-align: center;
+            font-weight: 200;
+            margin-bottom: 20px;
+        }
+        .content p{
+            border: 1px solid #2997d0;
+            border-radius: 5px;
+            line-height: 2;
+            font-size: 16px;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h2 class="nav">双向数据绑定</h2>
+    </header>
+    <main class="container">
+        <div class="row">
+            <form action="" class="col-md-6">
+                <div class="form-group">
+                    <label for="input">请输入内容：</label>
+                    <input type="text" id="input" class="form-control" placeholder="请输入内容">
+                </div>
+            </form>
+            <div class="col-md-6 content">
+                <label>这里是动态响应的内容：</label>
+                <p id="content"></p>
+            </div>
+        </div>
+    </main>
+    <script>
+        // 对象的数据属性和访问器属性
+        // 通过访问器属性实现脏值检测，双向的数据绑定
+        function Data(input){
+            let innerVal = input;
+            Object.defineProperty(this,"val",{
+                get : function (){
+                    return innerVal;
+                },
+                set : function (value){
+                    if(innerVal != value){
+                        innerVal = value;
+                        this.digest(value);
+                    }
+                }
+            });  
+        };
+        Data.prototype.digest = function(newVal){
+            console.log("value is changed " , newVal);
+            content.innerText = newVal;
+            input.value = newVal;
+        };
+
+        let model = new Data();
+        let input = document.getElementById("input");
+        let content = document.getElementById("content");
+
+        input.addEventListener("input",function(e){
+            model.val = this.value;
+        });
+        
+        // class 声明模式 class是prototype的语法糖
+
+        class Model {
+            constructor(v){
+                // return { // 这种方法不会继承自Model 和 普通的函数一样
+                //     get val(){
+                //         return v;
+                //     },
+                //     set val(newv){
+                //         v = newv;
+                //     }
+                // }
+                Object.defineProperty(this,"val",{
+                    get : function(){
+                        return v;
+                    },
+                    set : function(newVal){
+                        if(v != newVal){
+                            v = newVal;
+                            this.change(newVal);
+                        }
+                    }
+                });
+            }
+
+            change(nval){
+                console.log("value is changed; " + nval);
+            }
+        }
+
+    </script>
+</body>
+</html>

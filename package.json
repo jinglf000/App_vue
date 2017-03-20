@@ -4,6 +4,7 @@
   "description": "a vue.js test app for mobile app",
   "author": "jinglf000",
   "dependencies": {
+    "body-parser": "^1.17.1",
     "bootstrap": "^3.3.7",
     "express": "^4.15.2",
     "express-http-proxy": "^0.11.0",
