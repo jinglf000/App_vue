@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>自定义指令</title>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <style>
+        nav h2{
+            text-align: center;
+            font-weight: 200;
+        }
+        .row{
+            font-size: 16px;
+        }
+    </style>
+    <script src="../../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <nav>
+        <h2>Vue 自定义指令</h2>
+    </nav>
+    <main class="container" id="main">
+        <div class="row">
+            <div class="col-sm-6">
+                <p v-color="{ color : 'white',text : 'hello!' }">
+                    这是一个 col-sm-6 的 row列
+                </p>
+            </div>
+            <div class="col-sm-6">
+                <input type="text" class="form-control" v-focus>
+            </div>
+        </div>
+    </main>
+    <script>
+        // 自定义指令也可以实现部分功能 directive,"v-focus" 使用方法;
+        // 加载页面自动获得焦点
+        Vue.directive("focus",{
+            // 当元素插入到DOM中
+            inserted : function(el){
+                // 
+                el.focus();
+            }
+        });
+        Vue.directive('color',funciton(el,binding){
+
+        });
+
+
+
+        // 在Vue 中代码复用的主要形式和抽象是组件
+        let vm = new Vue({
+            el : "#main"
+        });
+    </script>
+</body>
+</html>
