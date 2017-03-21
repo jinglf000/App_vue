@@ -15,11 +15,10 @@ let apiProxy = proxy(proxyUrl,{
         return req._parsedUrl.path;
     }
 });
+
+// 代理接口地址
 app.use("/proxy/*",apiProxy);
-
 app.use(express.static(path.join(__dirname.replace("\\build",""))));
-
-console.log(path.join(__dirname.replace("/build","")));
 
 app.listen(port);
 

@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>VUE app</title>
+    <script type="text/javascript" src=".././js/vue.js"></script>
+    <style>
+        *{
+            font-family: "Microsoft YaHei";
+        }
+        .red{
+            color : red;
+        }
+        .box-shadow{
+            text-shadow: 1px 1px 1px #ccc;
+        }
+        #box2{
+            position: absolute;
+            right: 10px;
+            top: 20px;
+            border : 1px solid #009900;
+            border-radius : 5px;
+        }
+        #box4{
+            position: absolute;
+            top: 100px;
+            z-index: 10;
+            background-color: #fff;
+            right: 10px;
+            border: 2px solid red;
+            border-radius: 8px;
+        }
+        area:hover{
+            border: 1px solid greenyellow;
+        }
+        .num{
+            font-size: 32px;
+            font-weight: 900;
+            color: #009900;
+            text-shadow: 1px 1px 1px #ccc ;
+            word-spacing: 56px;
+        }
+        #box5{
+            background-color: #ccc;
+            line-height: 2;
+            font-size: 24px;
+            font-weight: lighter;
+        }
+    </style>
+    <link rel="stylesheet" href="../../node_modules/bootstrap/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div id="box" v-bind:class="cla">
+        <span>
+            {{message | reverseStr}}     
+        </span>
+        <input v-model="message" type="text">
+        <button v-on:click="count ++">{{count}}</button>
+        <!-- 事件修饰符 ，使用Vue处理常见处理 -->
+        <!-- stop阻止事件冒泡  prevent阻止默认事件 capture捕获模式 self本身元素触发 这些对应于原生的DOM元素 -->
+        <!-- once只执行一次 自定义事件-->
+        <button v-on:click='doSomething(count,$event)'>doSomething</button>
+        <p>enter 按键的修饰符，用于keyup事件<input type="text" v-on:keyup.enter="printLog(keyupModel,$event)" v-model="keyupModel"></p>
+        <span>{{computedMessage}}</span>
+        <p>{{allMessage}}</p>
+        <p>{{messageGetSet}}</p>
+        <p v-bind:class="classStyle" :title="message">classStyle</p>
+        <!-- 无论是class 来说还是对于 style ，都要注意到 key （才是那个class，或者是style）的样式名称 -->
+        <p>
+            <label for="changeSize">改变文字的大小
+                <input type="range" min="12" max="800" v-model="fontSize">
+            </label>
+        </p>
+        <p v-bind:style="pStyleComputed">这里是P的style</p>
+
+        <div v-if="Math.random() > 0.5"> Math.random > 0.5 </div>
+        <div v-else-if="Math.random() < 0.7">dayu 0.7</div>
+        <div v-else>dayu 0.7s</div>
+
+        <!-- key 使用它来管理科可以进行复用的元素  -->
+        <!-- v-for 的优先级大于 v-if -->
+        <br>
+        <ul>
+            <li v-for="(item , index) of list" v-if="item < 4">{{item}}---{{index}}</li>
+        </ul>
+        <br>
+        <ol>
+            <li v-for="(value,key) in pStyle">---- {{ key }} ---- {{value}}</li>
+        </ol>
+        <ul>
+            <li v-for="n in 10">{{n}}</li>
+        </ul>
+    </div>
+    <div id="box2">
+        <input type="text" v-model="newTodoText" v-on:keyup.enter="addNewTodo" placeholder="addNewTodo">
+        <ul>
+            <li is="todo-item" v-for="(todo,index) in todos" v-bind:title="todo" v-on:remove="todos.splice(index,1)"></li>
+        </ul>
+    </div>
+    <div id="box3">
+        <!-- 在使用 v-model 的时候需要在date中声明该实例才行 -->
+        <textarea name="lines" id="lines" cols="30" rows="10" placeholder="add multiple lines" v-model="lines"></textarea>
+        <p>多行文本输入内容：{{lines}}</p>
+        <select name="selects" id="select" multiple v-model="selectContent">
+            <option value="A" >+++A+++</option>
+            <option value="B">+++B+++</option>
+            <option value="C">+++C+++</option>
+        </select>
+        <p>select 内容：{{selectContent}}</p>
+        <!-- checkedNames的数据类型决定了 最终checkedNames最终的值是什么 -->
+        <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+        <label for="jack">Jack</label>
+        <input type="checkbox" id="john" value="John" v-model="checkedNames">
+        <label for="john">John</label>
+        <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+        <label for="mike">Mike</label>
+        <br>
+        <span>{{checkedNames}}</span>
+        <br>
+        <select v-model="selected">
+            <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
+        </select>
+        <span>Selected : {{selected}}</span>
+        <br>
+        <!-- 通过设置 model的值，来设置自定义 -->
+        <input type="checkbox" v-bind:true-value="checkTrue" v-bind:false-value="checkFalse" v-model="checkValue">
+    </div>
+    <div id="box4">
+        <h3>{{helloWorld.one}}</h3>
+        <h4>{{helloWorld.two}}  ------  {{helloWorld.three}}</h4>
+        <p>从子组件中所传递过来的事件的个数<span class="num"> {{count}}</span></p>
+        <!-- 在 ui-dialog（包括它自己）之前都是属于父元素的  -->
+        <ui-dialog v-bind:hello-vue="parentVue" v-on:emitchild="addNum" v-bind:yes-callback="btnClick">
+            <span slot="header">标题</span>
+            <span slot="body">确认删除吗？</span>
+            <span>删不删除这是一个问题</span>
+            <p>{{parentVal}}</p>
+            <!-- 这里的parentVal 对应的是父模板的作用域，分发的内容是在父作用域内编译 -->
+        </ui-dialog>
+    </div>
+    <div id="box5">{{message}}</div>
+    <div id="box6">
+        <example></example>
+    </div>
+    <script src=".././js/test.js"></script>
+</body>
+</html>

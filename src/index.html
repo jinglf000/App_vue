@@ -1,147 +1,306 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <title>VUE app</title>
-    <script type="text/javascript" src="./js/vue.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>VUE render function and animate</title>
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="../node_modules/animate.css/animate.min.css">
+    <link rel="stylesheet" href="./css/main.css">
     <style>
-        *{
-            font-family: "Microsoft YaHei";
+        @keyframes bounce-in {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
-        .red{
-            color : red;
+        
+        @keyframes bounce-out {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.5);
+            }
+            100% {
+                transform: scale(1)
+            }
         }
-        .box-shadow{
-            text-shadow: 1px 1px 1px #ccc;
+        
+        @keyframes shake {
+            form,
+            to {
+                transform: translate3d(0, 0, 0);
+            }
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translate3d(-10px, 0, 0);
+            }
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translate3d(10px, 0, 0);
+            }
         }
-        #box2{
-            position: absolute;
-            right: 10px;
-            top: 20px;
-            border : 1px solid #009900;
-            border-radius : 5px;
+        
+        nav h2 {
+            font-weight: 200;
+            text-align: center;
+            margin-bottom: 20px;
         }
-        #box4{
-            position: absolute;
-            top: 100px;
-            z-index: 10;
-            background-color: #fff;
-            right: 10px;
-            border: 2px solid red;
-            border-radius: 8px;
+        
+        .shake-enter-active {
+            animation: shake .5s;
         }
-        area:hover{
-            border: 1px solid greenyellow;
+        
+        .shake-leave-active {
+            animation: shake .5s;
         }
-        .num{
-            font-size: 32px;
-            font-weight: 900;
-            color: #009900;
-            text-shadow: 1px 1px 1px #ccc ;
-            word-spacing: 56px;
+        
+        .toggle-enter-active {
+            transition: all 1s ease;
         }
-        #box5{
-            background-color: #ccc;
-            line-height: 2;
-            font-size: 24px;
-            font-weight: lighter;
+        
+        .toggle-leave-active {
+            transition: all 2s cubic-bezier(0.075, 0.82, 0.165, 1);
+        }
+        
+        .toggle-enter,
+        .toggle-leave-active {
+            transform: translateX(60px);
+        }
+        
+        .bounce-enter-active {
+            animation: bounce-in .5s;
+        }
+        
+        .bounce-leave-active {
+            animation: bounce-out .5s;
+        }
+        
+        @media print {
+            /* 这些样式在打印的时候生效 */
+            .col-md-4 {
+                display: none;
+            }
+            .print {
+                display: none;
+            }
         }
     </style>
-    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script src="../node_modules/vue/dist/vue.js"></script>
 </head>
+
 <body>
-    <div id="box" v-bind:class="cla">
-        <span>
-            {{message | reverseStr}}     
-        </span>
-        <input v-model="message" type="text">
-        <button v-on:click="count ++">{{count}}</button>
-        <!-- 事件修饰符 ，使用Vue处理常见处理 -->
-        <!-- stop阻止事件冒泡  prevent阻止默认事件 capture捕获模式 self本身元素触发 这些对应于原生的DOM元素 -->
-        <!-- once只执行一次 自定义事件-->
-        <button v-on:click='doSomething(count,$event)'>doSomething</button>
-        <p>enter 按键的修饰符，用于keyup事件<input type="text" v-on:keyup.enter="printLog(keyupModel,$event)" v-model="keyupModel"></p>
-        <span>{{computedMessage}}</span>
-        <p>{{allMessage}}</p>
-        <p>{{messageGetSet}}</p>
-        <p v-bind:class="classStyle" :title="message">classStyle</p>
-        <!-- 无论是class 来说还是对于 style ，都要注意到 key （才是那个class，或者是style）的样式名称 -->
-        <p>
-            <label for="changeSize">改变文字的大小
-                <input type="range" min="12" max="800" v-model="fontSize">
-            </label>
-        </p>
-        <p v-bind:style="pStyleComputed">这里是P的style</p>
+    <nav>
+        <h2>Vue 过渡动画</h2>
+    </nav>
+    <main class="container" id="example_1">
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-primary" v-on:click="show = !show">切换</button>
+            </div>
+            <div class="col-md-8">
+                <transition class="col-md-8" is="transition" name="shake">
+                    <p v-if="show">你好，这是一个使用CSS3的状态切换动画</p>
+                </transition>
+            </div>
+        </div>
+    </main>
+    <div id="example_2" class="container">
+        <div class="col-md-4">
+            <anchored-heading :level="level">
+                <span>这是一个H1</span>
+            </anchored-heading>
+            <hello-rander :num="2">很那号院</hello-rander>
+        </div>
+    </div>
+    <!-- anchor-header-template 组件 -->
+    <script type="text/x-template" id="ah-template">
+        <div>
+            <h1 v-if="level === 1">
+                <slot></slot>
+            </h1>
+            <h2 v-if="level === 2">
+                <slot></slot>
+            </h2>
+            <h3 v-if="level === 3">
+                <slot></slot>
+            </h3>
+            <h4 v-if="level === 4">
+                <slot></slot>
+            </h4>
+            <h5 v-if="level === 5">
+                <slot></slot>
+            </h5>
+            <h6 v-if="level === 6">
+                <slot></slot>
+            </h6>
+        </div>
+    </script>
+    <script>
+        var getChildrenTextContent = function (children) {
+            return children.map(function (node) {
+                return node.children
+                    ? getChildrenTextContent(node.children)
+                    : node.text
+            }).join('')
+        }
+        Vue.component('anchored-heading', {
+            render: function (createElement) {
+                // create kebabCase id
+                var headingId = getChildrenTextContent(this.$slots.default)
+                    .toLowerCase()
+                    .replace(/\W+/g, '-')
+                    .replace(/(^\-|\-$)/g, '')
+                return createElement(
+                    'h' + this.level,
+                    [
+                        createElement('a', {
+                            attrs: {
+                                name: headingId,
+                                href: '#' + headingId
+                            }
+                        }, this.$slots.default)
+                    ]
+                )
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        })
+        // 这也是模板构造的一种方式
+        // template 内容在 script type='text/x-template' 里面
+        Vue.component("heading", {
+            template: "#ah-template",
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        });
+        // 实际上，Vue 的模板实际是编译成了 render 函数。
+        // 即便在书写的时候写的是 templete ---> 一堆字符串
+        // 但在实际使用的时候 会把它变成render()函数
+        // 使用render函数来构建组件
+        Vue.component('anchor-heading', {
+            render: function (createElement) {
+                return createElement(
+                    'h' + this.level, //tag name 标签名
+                    this.$slots.default// 子组件阵列
+                )
+            },
+            props: {
+                level: {
+                    type: Number,
+                    required: true
+                }
+            }
+        });
+        Vue.component('hello-rander', {
+            render: function (creatElement) {
+                return creatElement('h' + this.num,{
+                    "class" : {
+                        pname : true
+                    },
+                    "attrs" : {
+                        id : true
+                    }
+                },[
+                    creatElement('span','hello'),
+                    "world",
+                    // slot 模板填充值
+                    creatElement("p",this.$slots.default)                   
+                ])
+            },
+            props: {
+                num: {
+                    type: Number,
+                    required: true
+                }
+            }
+        });
+        var vm = new Vue({
+            el: "#example_1",
+            data: {
+                show: true
+            }
+        });
+        var vm2 = new Vue({
+            el: "#example_2",
+            data: {
+                level: 1
+            }
+        })
+    </script>
 
-        <div v-if="Math.random() > 0.5"> Math.random > 0.5 </div>
-        <div v-else-if="Math.random() < 0.7">dayu 0.7</div>
-        <div v-else>dayu 0.7s</div>
-
-        <!-- key 使用它来管理科可以进行复用的元素  -->
-        <!-- v-for 的优先级大于 v-if -->
-        <br>
-        <ul>
-            <li v-for="(item , index) of list" v-if="item < 4">{{item}}---{{index}}</li>
-        </ul>
-        <br>
-        <ol>
-            <li v-for="(value,key) in pStyle">---- {{ key }} ---- {{value}}</li>
-        </ol>
-        <ul>
-            <li v-for="n in 10">{{n}}</li>
-        </ul>
-    </div>
-    <div id="box2">
-        <input type="text" v-model="newTodoText" v-on:keyup.enter="addNewTodo" placeholder="addNewTodo">
-        <ul>
-            <li is="todo-item" v-for="(todo,index) in todos" v-bind:title="todo" v-on:remove="todos.splice(index,1)"></li>
-        </ul>
-    </div>
-    <div id="box3">
-        <!-- 在使用 v-model 的时候需要在date中声明该实例才行 -->
-        <textarea name="lines" id="lines" cols="30" rows="10" placeholder="add multiple lines" v-model="lines"></textarea>
-        <p>多行文本输入内容：{{lines}}</p>
-        <select name="selects" id="select" multiple v-model="selectContent">
-            <option value="A" >+++A+++</option>
-            <option value="B">+++B+++</option>
-            <option value="C">+++C+++</option>
-        </select>
-        <p>select 内容：{{selectContent}}</p>
-        <!-- checkedNames的数据类型决定了 最终checkedNames最终的值是什么 -->
-        <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
-        <label for="jack">Jack</label>
-        <input type="checkbox" id="john" value="John" v-model="checkedNames">
-        <label for="john">John</label>
-        <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
-        <label for="mike">Mike</label>
-        <br>
-        <span>{{checkedNames}}</span>
-        <br>
-        <select v-model="selected">
-            <option v-for="option in options" v-bind:value="option.value">{{option.text}}</option>
-        </select>
-        <span>Selected : {{selected}}</span>
-        <br>
-        <!-- 通过设置 model的值，来设置自定义 -->
-        <input type="checkbox" v-bind:true-value="checkTrue" v-bind:false-value="checkFalse" v-model="checkValue">
-    </div>
-    <div id="box4">
-        <h3>{{helloWorld.one}}</h3>
-        <h4>{{helloWorld.two}}  ------  {{helloWorld.three}}</h4>
-        <p>从子组件中所传递过来的事件的个数<span class="num"> {{count}}</span></p>
-        <!-- 在 ui-dialog（包括它自己）之前都是属于父元素的  -->
-        <ui-dialog v-bind:hello-vue="parentVue" v-on:emitchild="addNum" v-bind:yes-callback="btnClick">
-            <span slot="header">标题</span>
-            <span slot="body">确认删除吗？</span>
-            <span>删不删除这是一个问题</span>
-            <p>{{parentVal}}</p>
-            <!-- 这里的parentVal 对应的是父模板的作用域，分发的内容是在父作用域内编译 -->
-        </ui-dialog>
-    </div>
-    <div id="box5">{{message}}</div>
-    <div id="box6">
-        <example></example>
-    </div>
-    <script src="./js/app.js"></script>
+    <script>
+        /*return creatElement(
+            'div',
+            {   // 类似于 v-bind:class 
+                'class' : {
+                    foo : true,
+                    bar : false
+                },
+                // 类似于 v-bind:style
+                'style' : {
+                    color : 'red',
+                    fontSize : "lighter"
+                },
+                // 正常的 html 属性
+                attr : {
+                    id : 'foo'
+                },
+                props : {
+                    myProp : 'bar'
+                },
+                // DOM 属性
+                domProps :{
+                    innerHTML : '这是一个DOM的属性呀'
+                },
+                on : {
+                    click : this.clickHandler
+                },
+                // 原生事件
+                nativeOn : {
+                    click : this.nativeClickHandler
+                },
+                // 自定义指令
+                directives : [
+                    {
+                        name : "my-custom-directive",
+                        value : 2,
+                        expression : "1 + 1",
+                        arg : 'foo',
+                        modifiers : {
+                            bar : true
+                        }
+                    }
+                ],
+                scopedSlots : {
+                    default : props => h('span' , props.txt)
+                },
+                slot : 'name-of-slot',
+                key : 'myKey',
+                ref : 'myRef'
+            }
+        )*/
+    </script>
 </body>
+
 </html>
