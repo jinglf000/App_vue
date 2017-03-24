@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "a vue.js test app for mobile app",
   "author": "jinglf000",
+  "scripts": {
+    "build": "webpack --config webpack.config.js"
+  },
   "dependencies": {
     "animate.css": "^3.5.2",
     "body-parser": "^1.17.1",
@@ -14,5 +17,16 @@
     "vue": "^2.2.3"
   },
   "repository": "https://github.com/jinglf000/App_vue",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "css-loader": "^0.27.3",
+    "extract-text-webpack-plugin": "^2.1.0",
+    "file-loader": "^0.10.1",
+    "style-loader": "^0.16.0",
+    "url-loader": "^0.5.8",
+    "vue-loader": "^11.3.2",
+    "vue-template-compiler": "^2.2.4",
+    "webpack": "^2.3.1",
+    "webpack-dev-server": "^2.4.2"
+  }
 }
