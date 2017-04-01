@@ -3,11 +3,11 @@
 </template>
 
 <script>
-    module.exports = {
+    export default{
         name : 'dialog',
         data : function(){
             return {
-                greeting : greeting
+                greeting : this.greeting
             }
         },
         props : {

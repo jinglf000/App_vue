@@ -11,7 +11,10 @@
     <header>
         <h2 class="nav-h2">VUE 组件化</h2>
     </header>
-    <main id="login"></main>
+    <div id="warp" v-bind:greeting="toChild">   
+        <main id="login" ></main>
+    </div>
+    <p id="hello">{{name}}</p>
     <script src="../dist/vendor.js"></script>
     <script src="../dist/app.js"></script>
 </body>
